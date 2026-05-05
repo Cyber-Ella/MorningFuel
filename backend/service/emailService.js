@@ -1,11 +1,17 @@
-const transporter = require("../config/mailer");
 
-const sendEmail = (to, subject, text) => {
-  return transporter.sendMail({
-    from: process.env.EMAIL,
+const sgMail = require("@sendgrid/mail");
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const sendEmail = async (to, subject, text) => {
+  const msg = {
     to,
+    from: process.env.EMAIL,
     subject,
     html: text,
-  });
+  };
+
+  return sgMail.send(msg);
 };
+
 module.exports = sendEmail;
