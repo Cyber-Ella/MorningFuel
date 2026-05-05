@@ -16,7 +16,7 @@ app.use("/api", SubscriberRouter);
 startMorningJob();
 
 app.get("/", (req, res) => {
-  res.send("Morning email bot running");
+  res.send("Morning email bot is running");
 });
 
 app.get("/test-email", async (req, res) => {
