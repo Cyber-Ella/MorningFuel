@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 app.get("/test-email", async (req, res) => {
   try {
     await sendEmail(
-      "cyberella001@gmail.com",
+      "emmanuellaobi05@gmail.com",
       "SMTP Test",
       "If you see this, email works"
     );
