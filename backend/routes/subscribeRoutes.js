@@ -23,4 +23,19 @@ router.get("/", async (req, res) => {
   res.json(users);
 });
 
+router.get("/test-email", async (req, res) => {
+  try {
+    await sendEmail(
+      "your-email@gmail.com",
+      "SMTP Test",
+      "If you see this, email works"
+    );
+
+    res.send("Email sent successfully");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Email failed: " + err.message);
+  }
+});
+
 module.exports = router;
