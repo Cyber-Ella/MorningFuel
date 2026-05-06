@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const sendEmail= require("../service/emailService")
 const Subscriber = require("../model/Subscriber");
 
 router.post("/subscribe", async (req, res) => {
@@ -19,14 +18,7 @@ router.post("/subscribe", async (req, res) => {
   }
 });
 
-router.get('/send-morning-email', async (req, res) => {
-  try {
-    await sendEmail();
-    res.send('Morning email sent');
-  } catch (err) {
-    res.status(500).send('Error sending email');
-  }
-});
+
 
 router.get("/", async (req, res) => {
   const users = await Subscriber.find();
