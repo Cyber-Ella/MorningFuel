@@ -35,13 +35,13 @@ const startMorningJOb = async () => {
       </div>
     </div>
        `;
-    users.forEach(async (user) => {
-      try {
-        await sendEmail(user.email, "Good Morning Motivation 🌟", message);
-        console.log("Email sent to:", user.email);
-      } catch (err) {
+    for (const user of users) {
+     try {
+       await sendEmail(user.email, "Good Morning Motivation 🌟", message);
+       console.log("Email sent to:", user.email);
+     } catch (err) {
         console.log("Email failed for:", user.email, err);
       }
-    });
+    }
 }
 module.exports = startMorningJOb;
