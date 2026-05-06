@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const startMorningJob = require("../jobs/morningJob")
 const Subscriber = require("../model/Subscriber");
 
 router.post("/subscribe", async (req, res) => {
@@ -18,7 +19,14 @@ router.post("/subscribe", async (req, res) => {
   }
 });
 
-
+router.get('/send-morning-email', async (req, res) => {
+  try {
+    await startMorningJob();
+    res.send('Morning email sent');
+  } catch (err) {
+    res.status(500).send('Error sending email');
+  }
+});
 
 router.get("/", async (req, res) => {
   const users = await Subscriber.find();
