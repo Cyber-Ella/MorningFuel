@@ -20,14 +20,16 @@ router.post("/subscribe", async (req, res) => {
 });
 
 router.get('/send-morning-email', async (req, res) => {
-  try {
-    await startMorningJob();
-    res.send('Morning email sent');
-  } catch (err) {
-    res.status(500).send('Error sending email');
+  if (req.query.key !== process.env.CRON_KEY) {
+    return res.status(403).send("Unauthorized");
   }
-});
 
+  startMorningJob().catch(err => {
+    console.error("Morning job failed:", err);
+  });
+
+  res.send('Triggered');
+});
 router.get("/", async (req, res) => {
   const users = await Subscriber.find();
   res.json(users);
