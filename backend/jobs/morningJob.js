@@ -1,10 +1,8 @@
-const cron = require("node-cron");
 const Subscriber = require("../model/Subscriber");
 const sendEmail = require("../service/emailService");
 const getQuote = require("../service/quoteService");
 
-const startMorningJOb = () => {
-  cron.schedule("0 7 * * *", async () => {
+const startMorningJOb = async () => {
     console.log("Sending text email...");
     const users = await Subscriber.find();
     const quote = await getQuote();
@@ -45,6 +43,5 @@ const startMorningJOb = () => {
         console.log("Email failed for:", user.email, err);
       }
     });
-  });
-};
+}
 module.exports = startMorningJOb;
