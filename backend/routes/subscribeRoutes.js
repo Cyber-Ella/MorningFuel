@@ -3,22 +3,41 @@ const router = express.Router();
 const startMorningJob = require("../jobs/morningJob")
 const Subscriber = require("../model/Subscriber");
 
+// handles subscribers
 router.post("/subscribe", async (req, res) => {
   try {
     const { email } = req.body;
-    const exists = await Subscriber.findOne({ email });
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(normalizedEmail)) {
+      return res.status(400).json({
+        message: "Invalid email format",
+      });
+    }
+    
+    const exists = await Subscriber.findOne({ email: normalizedEmail });
     if (exists) {
       return res.status(400).json({ message: "Email already exists" });
     }
-    const newUser = new Subscriber({ email });
+    const newUser = new Subscriber({ email: normalizedEmail });
     await newUser.save();
 
-    res.json({ message: "Subscribed Successfully" });
+    res.status(201).json({ message: "Subscribed Successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error)
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+//send morning email
 router.get('/send-morning-email', async (req, res) => {
   if (req.query.key !== process.env.CRON_KEY) {
     return res.status(403).send("Unauthorized");
@@ -30,9 +49,21 @@ router.get('/send-morning-email', async (req, res) => {
 
   res.send('Triggered');
 });
+
+//count subscribers
 router.get("/", async (req, res) => {
-  const users = await Subscriber.find();
-  res.json(users);
+  try {
+    const count = await Subscriber.countDocuments();
+    res.json({
+      subscribers: count,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+
 });
 
 
