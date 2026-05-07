@@ -6,6 +6,10 @@ const subscriberSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  lastSent:{
+    type: String,
+    default: "",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
