@@ -4,8 +4,10 @@ const getQuote = require("../service/quoteService");
 
 const startMorningJOb = async () => {
     console.log("Sending text email...");
+ try{
     const users = await Subscriber.find();
     const quote = await getQuote();
+    const today = new Date().toDateString()
     const message = `
           <div
       style="
@@ -36,12 +38,23 @@ const startMorningJOb = async () => {
     </div>
        `;
     for (const user of users) {
+        if(user.lastSent === today){
+            console.log("Skipped", user.email)
+            continue
+        }
      try {
        await sendEmail(user.email, "Good Morning Motivation 🌟", message);
+         user.lastSent = today;
+         await user.save()
        console.log("Email sent to:", user.email);
+        
      } catch (err) {
         console.log("Email failed for:", user.email, err);
       }
     }
+      console.log("morning job finshed")
+ }catch(err){
+      console.error("Job failed:", err);
+ }
 }
 module.exports = startMorningJOb;
