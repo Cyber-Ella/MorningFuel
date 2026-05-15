@@ -39,16 +39,30 @@ router.post("/subscribe", async (req, res) => {
 
 //send morning email
 router.get('/send-morning-email', async (req, res) => {
-  if (req.query.key !== process.env.CRON_KEY) {
-    return res.status(403).send("Unauthorized");
+  try {
+    if (req.query.key !== process.env.CRON_KEY) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
+
+    
+    res.status(200).json({
+      success: true,
+      message: "Morning email job started"
+    });
+
+    
+    startMorningJob().catch(err => {
+      console.error("Morning job failed:", err);
+    });
+
+  } catch (err) {
+    console.error(err);
   }
-
-  startMorningJob().catch(err => {
-    console.error("Morning job failed:", err);
-  });
-
-  res.send('Triggered');
 });
+
 
 //count subscribers
 router.get("/", async (req, res) => {
